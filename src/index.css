@@ -1,0 +1,296 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: "Pixelify Sans", "Onest", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Onest", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Momo Trust Sans", "Onest", ui-sans-serif, system-ui, sans-serif;
+  --color-obsidian: #090E23;
+  --color-graphite: #101733;
+  --color-volt: #D4FF00;
+  --color-optical-cyan: #8FD3FF;
+  --color-chrome: #E6EEFF;
+}
+
+/* ==========================================================================
+   DUAL PIXEL-SKY THEME TOKENS
+   Dark  -> Starry Midnight Night Sky (Unicorn Studio lLsvCDiAv9LBiSWdtQVd)
+   Light -> Daytime Azure Cloud Sky   (Unicorn Studio NNJtGH4REW39gQaOwfAd)
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+  --bg-base: #090E23;
+  --bg-surface: #101733;
+  --bg-elevated: #172145;
+  --bg-subtle: #0D142E;
+  --bg-nav: rgba(9, 14, 35, 0.80);
+  --bg-footer: #060A1B;
+  --text-primary: #F4F7FF;
+  --text-secondary: #C5D3F0;
+  --text-muted: #889BC7;
+  --border-subtle: rgba(148, 174, 240, 0.18);
+  --border-strong: rgba(148, 174, 240, 0.34);
+  --accent-primary: #D4FF00;
+  --accent-primary-hover: #C2EC00;
+  --accent-primary-ink: #090E23;
+  --accent-secondary: #8FD3FF;
+  --accent-moon: #FFF3B8;
+  --grid-line: rgba(148, 174, 240, 0.065);
+}
+
+[data-theme="light"] {
+  --bg-base: #EAF6FF;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F3FAFF;
+  --bg-subtle: #DCEFFF;
+  --bg-nav: rgba(234, 246, 255, 0.86);
+  --bg-footer: #D4EBFF;
+  --text-primary: #0B1A36;
+  --text-secondary: #28426E;
+  --text-muted: #506C99;
+  --border-subtle: rgba(34, 108, 196, 0.18);
+  --border-strong: rgba(34, 108, 196, 0.36);
+  --accent-primary: #C9F500;
+  --accent-primary-hover: #B8E300;
+  --accent-primary-ink: #0B1A36;
+  --accent-secondary: #1570D4;
+  --accent-moon: #1570D4;
+  --grid-line: rgba(34, 108, 196, 0.075);
+}
+
+@layer base {
+  html {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.025em;
+  }
+
+  button, a, input, select, textarea {
+    outline-color: var(--accent-primary);
+  }
+}
+
+/* Replaced cursive Cormorant Garamond everywhere with Pixelify Sans */
+.font-editorial,
+.font-pixel {
+  font-family: var(--font-pixel);
+  font-style: normal;
+  letter-spacing: 0.01em;
+}
+
+.sci-grid-bg {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.glass-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-surface {
+  background: var(--bg-elevated);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   THEME HARMONIZATION ACROSS ALL MODULE VIEWS
+   Aligns Dark surfaces to Starry Midnight (#090E23 / #101733)
+   and flips Light surfaces cleanly to Daytime Cloud Sky (#EAF6FF / #FFFFFF)
+   ========================================================================== */
+[data-theme="dark"] .bg-\[\#050608\] {
+  background-color: #090E23;
+}
+[data-theme="dark"] .bg-\[\#080A0F\] {
+  background-color: #0D142E;
+}
+[data-theme="dark"] .bg-\[\#0C0F16\],
+[data-theme="dark"] .bg-\[\#0C0F16\]\/90,
+[data-theme="dark"] .bg-\[\#0C0F16\]\/85 {
+  background-color: #101733;
+}
+[data-theme="dark"] .text-\[\#5CE1E6\] {
+  color: #8FD3FF;
+}
+[data-theme="dark"] .text-\[\#D9FF00\] {
+  color: #D4FF00;
+}
+[data-theme="dark"] .bg-\[\#D9FF00\] {
+  background-color: #D4FF00;
+}
+
+[data-theme="light"] .bg-\[\#050608\],
+[data-theme="light"] .bg-\[\#050608\]\/80,
+[data-theme="light"] .bg-\[\#050608\]\/82 {
+  background-color: #EAF6FF;
+}
+[data-theme="light"] .bg-\[\#080A0F\],
+[data-theme="light"] .bg-\[\#040507\] {
+  background-color: #DCEFFF;
+}
+[data-theme="light"] .bg-\[\#0C0F16\],
+[data-theme="light"] .bg-\[\#0C0F16\]\/90,
+[data-theme="light"] .bg-\[\#0C0F16\]\/85 {
+  background-color: #FFFFFF;
+  box-shadow: 0 6px 24px rgba(22, 92, 178, 0.07);
+}
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(21, 112, 212, 0.08);
+}
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-\[\#F4F5F7\],
+[data-theme="light"] .text-slate-100 {
+  color: #0B1A36;
+}
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300 {
+  color: #28426E;
+}
+[data-theme="light"] .text-slate-400,
+[data-theme="light"] .text-slate-500,
+[data-theme="light"] .text-zinc-400 {
+  color: #506C99;
+}
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/12,
+[data-theme="light"] .border-white\/15,
+[data-theme="light"] .border-white\/20 {
+  border-color: rgba(34, 108, 196, 0.22);
+}
+[data-theme="light"] .text-\[\#5CE1E6\] {
+  color: #1570D4;
+}
+[data-theme="light"] .text-\[\#D9FF00\] {
+  color: #1570D4;
+}
+[data-theme="light"] .bg-\[\#D9FF00\],
+[data-theme="light"] .bg-\[\#D4FF00\] {
+  background-color: #C9F500;
+  color: #0B1A36;
+  box-shadow: inset 0 0 0 1px rgba(11, 26, 54, 0.14);
+}
+[data-theme="light"] .bg-\[\#D9FF00\]\/15,
+[data-theme="light"] .bg-\[\#D9FF00\]\/10 {
+  background-color: rgba(21, 112, 212, 0.12);
+}
+[data-theme="light"] .border-\[\#D9FF00\]\/30,
+[data-theme="light"] .border-\[\#D9FF00\]\/35,
+[data-theme="light"] .border-\[\#D9FF00\]\/40 {
+  border-color: rgba(21, 112, 212, 0.35);
+}
+
+[data-theme="light"] .bg-rose-950\/50,
+[data-theme="light"] .bg-rose-950\/80 {
+  background-color: #FFF1F2;
+}
+[data-theme="light"] .text-rose-200 {
+  color: #9F1239;
+}
+[data-theme="light"] .bg-emerald-950\/40,
+[data-theme="light"] .bg-emerald-950\/50 {
+  background-color: #ECFDF5;
+}
+[data-theme="light"] .text-emerald-200,
+[data-theme="light"] .text-emerald-300 {
+  color: #065F46;
+}
+[data-theme="light"] .hover\:text-white:hover {
+  color: #0B1A36;
+}
+[data-theme="light"] .hover\:bg-white\/5:hover,
+[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: rgba(21, 112, 212, 0.12);
+}
+
+/* Keep explicit bright-on-sky text inside Hero/Vision badges clean */
+[data-theme="light"] .keep-dark-ink {
+  color: #0B1A36 !important;
+}
+
+/* Crisp nearest-neighbor scaling for native Pixel Art Sky canvas */
+.pixel-art-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Periodic green starlight radiance for pixel-art ACTIVE / FAOL / АКТИВНО badge */
+@keyframes pixel-green-glow-dark {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(57, 255, 122, 0.35));
+    opacity: 0.88;
+  }
+  50% {
+    filter: drop-shadow(0 0 7px rgba(57, 255, 122, 0.95)) drop-shadow(0 0 14px rgba(34, 255, 102, 0.55));
+    opacity: 1;
+  }
+}
+
+@keyframes pixel-green-glow-light {
+  0%, 100% {
+    filter: drop-shadow(0 0 1px rgba(16, 185, 129, 0.25));
+    opacity: 0.92;
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.85)) drop-shadow(0 0 11px rgba(52, 211, 153, 0.55));
+    opacity: 1;
+  }
+}
+
+@keyframes pixel-star-blink {
+  0%, 100% {
+    opacity: 0.15;
+  }
+  45% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.85;
+  }
+}
+
+.pixel-active-glow-dark {
+  animation: pixel-green-glow-dark 3.2s ease-in-out infinite;
+}
+
+.pixel-active-glow-light {
+  animation: pixel-green-glow-light 3.2s ease-in-out infinite;
+}
+
+.pixel-star-twinkle-a {
+  animation: pixel-star-blink 2.6s ease-in-out infinite;
+}
+
+.pixel-star-twinkle-b {
+  animation: pixel-star-blink 3.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

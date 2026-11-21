@@ -1,0 +1,452 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // PRIMITIVES & IDENTITY HELPERS
+    // =========================================================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isBootstrapAdmin() {
+      return isVerified() && request.auth.token.email == 'ddfavd@gmail.com';
+    }
+
+    function isAdmin() {
+      return isBootstrapAdmin() || (
+        isVerified() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.accessLevel == 'admin'
+      );
+    }
+
+    function isCoordinatorOrAdmin() {
+      return isBootstrapAdmin() || (
+        isVerified() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.accessLevel in ['admin', 'coordinator']
+      );
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isBoundedString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isBoundedStringList(arr, maxItems) {
+      return arr is list && arr.size() <= maxItems && (arr.size() == 0 || arr[0] is string);
+    }
+
+    function isBoundedMapList(arr, maxItems) {
+      return arr is list && arr.size() <= maxItems && (arr.size() == 0 || arr[0] is map);
+    }
+
+    // =========================================================================
+    // VALIDATION BLUEPRINTS (ANTI-UPDATE-GAP)
+    // =========================================================================
+
+    function isValidUserProfile(data, targetUid) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'role', 'region', 'school', 'grade', 'language', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'displayName', 'role', 'region', 'district', 'school', 'grade', 'bio', 'interests', 'language', 'createdAt', 'updatedAt'])
+        && data.uid == targetUid
+        && isValidId(data.uid)
+        && isBoundedString(data.email, 3, 200)
+        && isBoundedString(data.displayName, 1, 120)
+        && data.role in ['student', 'mentor', 'coordinator', 'admin']
+        && isBoundedString(data.region, 0, 100)
+        && (!('district' in data) || isBoundedString(data.district, 0, 100))
+        && isBoundedString(data.school, 0, 160)
+        && isBoundedString(data.grade, 0, 30)
+        && (!('bio' in data) || isBoundedString(data.bio, 0, 600))
+        && (!('interests' in data) || isBoundedStringList(data.interests, 10))
+        && data.language in ['uz', 'ru', 'en']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidAdminRegistry(data, targetUid) {
+      return data.keys().hasAll(['uid', 'email', 'accessLevel', 'assignedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'accessLevel', 'assignedAt'])
+        && data.uid == targetUid
+        && isValidId(data.uid)
+        && isBoundedString(data.email, 3, 200)
+        && data.accessLevel in ['admin', 'coordinator']
+        && data.assignedAt is timestamp;
+    }
+
+    function isValidTalentQuestion(data) {
+      return data.keys().hasAll(['order', 'domain', 'textUz', 'textRu', 'textEn', 'active', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['order', 'domain', 'textUz', 'textRu', 'textEn', 'active', 'createdAt', 'updatedAt'])
+        && data.order is int && data.order >= 1 && data.order <= 200
+        && data.domain in ['ai_engineering', 'research_science', 'entrepreneurship', 'leadership', 'design_architecture', 'social_impact']
+        && isBoundedString(data.textUz, 5, 400)
+        && isBoundedString(data.textRu, 5, 400)
+        && isBoundedString(data.textEn, 5, 400)
+        && data.active is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidTalentResult(data) {
+      return data.keys().hasAll(['userId', 'answersCount', 'scores', 'primaryDomain', 'secondaryDomain', 'language', 'createdAt'])
+        && data.keys().hasOnly(['userId', 'answersCount', 'scores', 'primaryDomain', 'secondaryDomain', 'aiSummary', 'aiRoadmap', 'aiProjectIdeas', 'language', 'createdAt'])
+        && isValidId(data.userId)
+        && data.answersCount is int && data.answersCount >= 1 && data.answersCount <= 100
+        && data.scores is map
+        && isBoundedString(data.primaryDomain, 2, 60)
+        && isBoundedString(data.secondaryDomain, 2, 60)
+        && (!('aiSummary' in data) || isBoundedString(data.aiSummary, 0, 3000))
+        && (!('aiRoadmap' in data) || isBoundedStringList(data.aiRoadmap, 8))
+        && (!('aiProjectIdeas' in data) || isBoundedStringList(data.aiProjectIdeas, 5))
+        && data.language in ['uz', 'ru', 'en']
+        && data.createdAt is timestamp;
+    }
+
+    function isValidStudentProject(data) {
+      return data.keys().hasAll(['ownerId', 'ownerName', 'title', 'track', 'summary', 'problem', 'solution', 'region', 'school', 'teamMembers', 'tasks', 'progress', 'status', 'visibility', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['ownerId', 'ownerName', 'title', 'track', 'summary', 'problem', 'solution', 'region', 'school', 'teamMembers', 'tasks', 'progress', 'status', 'visibility', 'moderatorNote', 'aiReview', 'createdAt', 'updatedAt'])
+        && isValidId(data.ownerId)
+        && isBoundedString(data.ownerName, 1, 120)
+        && isBoundedString(data.title, 3, 140)
+        && data.track in ['ai_engineering', 'research_science', 'entrepreneurship', 'leadership', 'ecology_smart_city', 'education_tech']
+        && isBoundedString(data.summary, 10, 500)
+        && isBoundedString(data.problem, 10, 1500)
+        && isBoundedString(data.solution, 10, 1500)
+        && isBoundedString(data.region, 0, 100)
+        && isBoundedString(data.school, 0, 160)
+        && isBoundedStringList(data.teamMembers, 8)
+        && isBoundedMapList(data.tasks, 25)
+        && data.progress is int && data.progress >= 0 && data.progress <= 100
+        && data.status in ['draft', 'in_progress', 'submitted', 'approved', 'revision_needed']
+        && data.visibility in ['public', 'private']
+        && (!('moderatorNote' in data) || isBoundedString(data.moderatorNote, 0, 600))
+        && (!('aiReview' in data) || isBoundedString(data.aiReview, 0, 3500))
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidCommunityPost(data) {
+      return data.keys().hasAll(['authorId', 'authorName', 'authorRegion', 'community', 'postType', 'title', 'content', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['authorId', 'authorName', 'authorRegion', 'community', 'postType', 'title', 'content', 'eventDate', 'status', 'createdAt', 'updatedAt'])
+        && isValidId(data.authorId)
+        && isBoundedString(data.authorName, 1, 120)
+        && isBoundedString(data.authorRegion, 0, 100)
+        && data.community in ['ai_engineering', 'research_science', 'entrepreneurship', 'leadership', 'navoi_schools']
+        && data.postType in ['material', 'debate', 'event']
+        && isBoundedString(data.title, 4, 180)
+        && isBoundedString(data.content, 15, 3000)
+        && (!('eventDate' in data) || isBoundedString(data.eventDate, 0, 60))
+        && data.status in ['published', 'archived']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidCommunityComment(data, parentPostId) {
+      return data.keys().hasAll(['postId', 'authorId', 'authorName', 'body', 'createdAt'])
+        && data.keys().hasOnly(['postId', 'authorId', 'authorName', 'body', 'createdAt'])
+        && data.postId == parentPostId
+        && isValidId(data.postId)
+        && isValidId(data.authorId)
+        && isBoundedString(data.authorName, 1, 120)
+        && isBoundedString(data.body, 2, 1200)
+        && data.createdAt is timestamp;
+    }
+
+    function isValidOpportunity(data) {
+      return data.keys().hasAll(['title', 'category', 'organization', 'description', 'eligibility', 'region', 'deadline', 'verificationSource', 'verifiedByUid', 'verifiedByName', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['title', 'category', 'organization', 'description', 'eligibility', 'region', 'deadline', 'verificationSource', 'verifiedByUid', 'verifiedByName', 'status', 'createdAt', 'updatedAt'])
+        && isBoundedString(data.title, 4, 180)
+        && data.category in ['program', 'olympiad', 'internship', 'mentorship', 'entrepreneurship']
+        && isBoundedString(data.organization, 2, 160)
+        && isBoundedString(data.description, 15, 2500)
+        && isBoundedString(data.eligibility, 3, 300)
+        && isBoundedString(data.region, 0, 100)
+        && isBoundedString(data.deadline, 0, 60)
+        && isBoundedString(data.verificationSource, 5, 400)
+        && isValidId(data.verifiedByUid)
+        && isBoundedString(data.verifiedByName, 1, 120)
+        && data.status in ['verified', 'archived']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidSavedOpportunity(data) {
+      return data.keys().hasAll(['userId', 'opportunityId', 'opportunityTitle', 'category', 'createdAt'])
+        && data.keys().hasOnly(['userId', 'opportunityId', 'opportunityTitle', 'category', 'createdAt'])
+        && isValidId(data.userId)
+        && isValidId(data.opportunityId)
+        && isBoundedString(data.opportunityTitle, 2, 180)
+        && data.category in ['program', 'olympiad', 'internship', 'mentorship', 'entrepreneurship']
+        && data.createdAt is timestamp;
+    }
+
+    function isValidNotification(data) {
+      return data.keys().hasAll(['userId', 'title', 'message', 'kind', 'read', 'createdAt'])
+        && data.keys().hasOnly(['userId', 'title', 'message', 'kind', 'read', 'createdAt'])
+        && isValidId(data.userId)
+        && isBoundedString(data.title, 2, 140)
+        && isBoundedString(data.message, 4, 600)
+        && data.kind in ['system', 'project', 'opportunity', 'role']
+        && data.read is bool
+        && data.createdAt is timestamp;
+    }
+
+    function isValidPlatformSetting(data) {
+      return data.keys().hasAll(['launchRegion', 'allowPublicRegistration', 'updatedAt'])
+        && data.keys().hasOnly(['launchRegion', 'announcement', 'allowPublicRegistration', 'updatedAt'])
+        && isBoundedString(data.launchRegion, 2, 120)
+        && (!('announcement' in data) || isBoundedString(data.announcement, 0, 500))
+        && data.allowPublicRegistration is bool
+        && data.updatedAt is timestamp;
+    }
+
+    // =========================================================================
+    // COLLECTION RULES
+    // =========================================================================
+
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(userId)
+        && isOwner(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().email == request.auth.token.email
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (incoming().role == 'student' || isBootstrapAdmin());
+      allow update: if isVerified()
+        && isValidId(userId)
+        && isValidUserProfile(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().email == existing().email
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['role', 'updatedAt'])) ||
+          (isOwner(userId) && incoming().role == existing().role && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'region', 'district', 'school', 'grade', 'bio', 'interests', 'language', 'updatedAt']))
+        );
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+
+    match /admins/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(userId)
+        && isValidAdminRegistry(incoming(), userId)
+        && incoming().assignedAt == request.time
+        && isAdmin();
+      allow update: if isVerified()
+        && isValidId(userId)
+        && isValidAdminRegistry(incoming(), userId)
+        && incoming().uid == existing().uid
+        && isAdmin()
+        && incoming().diff(existing()).affectedKeys().hasOnly(['accessLevel', 'email', 'assignedAt']);
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+
+    match /talent_questions/{questionId} {
+      allow get: if isValidId(questionId);
+      allow list: if resource.data.active == true || isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(questionId)
+        && isValidTalentQuestion(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && isAdmin();
+      allow update: if isVerified()
+        && isValidId(questionId)
+        && isValidTalentQuestion(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && isAdmin()
+        && incoming().diff(existing()).affectedKeys().hasOnly(['order', 'domain', 'textUz', 'textRu', 'textEn', 'active', 'updatedAt']);
+      allow delete: if isValidId(questionId) && isAdmin();
+    }
+
+    match /talent_results/{resultId} {
+      allow get: if isValidId(resultId) && isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isBootstrapAdmin());
+      allow create: if isVerified()
+        && isValidId(resultId)
+        && isValidTalentResult(incoming())
+        && incoming().userId == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update: if isVerified()
+        && isValidId(resultId)
+        && isValidTalentResult(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt
+        && incoming().scores == existing().scores
+        && incoming().answersCount == existing().answersCount
+        && (
+          (existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['aiSummary', 'aiRoadmap', 'aiProjectIdeas'])) ||
+          isAdmin()
+        );
+      allow delete: if isValidId(resultId) && (isAdmin() || (isVerified() && existing().userId == request.auth.uid));
+    }
+
+    match /projects/{projectId} {
+      allow get: if isValidId(projectId) && (existing().visibility == 'public' || (isSignedIn() && existing().ownerId == request.auth.uid) || isAdmin());
+      allow list: if resource.data.visibility == 'public' || (isSignedIn() && resource.data.ownerId == request.auth.uid) || isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(projectId)
+        && isValidStudentProject(incoming())
+        && incoming().ownerId == request.auth.uid
+        && incoming().status in ['draft', 'in_progress', 'submitted']
+        && !('moderatorNote' in incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerified()
+        && isValidId(projectId)
+        && isValidStudentProject(incoming())
+        && incoming().ownerId == existing().ownerId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          (isCoordinatorOrAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'moderatorNote', 'visibility', 'updatedAt'])) ||
+          (existing().ownerId == request.auth.uid
+            && existing().status != 'approved'
+            && incoming().status in ['draft', 'in_progress', 'submitted']
+            && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'track', 'summary', 'problem', 'solution', 'region', 'school', 'teamMembers', 'tasks', 'progress', 'status', 'visibility', 'aiReview', 'updatedAt']))
+        );
+      allow delete: if isValidId(projectId) && (isAdmin() || (isVerified() && existing().ownerId == request.auth.uid && existing().status != 'approved'));
+    }
+
+    match /community_posts/{postId} {
+      allow get: if isValidId(postId) && (existing().status == 'published' || (isSignedIn() && existing().authorId == request.auth.uid) || isAdmin());
+      allow list: if resource.data.status == 'published' || (isSignedIn() && resource.data.authorId == request.auth.uid) || isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(postId)
+        && isValidCommunityPost(incoming())
+        && incoming().authorId == request.auth.uid
+        && incoming().status == 'published'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerified()
+        && isValidId(postId)
+        && isValidCommunityPost(incoming())
+        && incoming().authorId == existing().authorId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          (isCoordinatorOrAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])) ||
+          (existing().authorId == request.auth.uid && existing().status != 'archived' && incoming().status == existing().status && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'content', 'community', 'postType', 'eventDate', 'updatedAt']))
+        );
+      allow delete: if isValidId(postId) && (isAdmin() || (isVerified() && existing().authorId == request.auth.uid));
+
+      match /comments/{commentId} {
+        allow get: if isValidId(postId) && isValidId(commentId);
+        allow list: if resource.data.postId == postId;
+        allow create: if isVerified()
+          && isValidId(postId)
+          && isValidId(commentId)
+          && isValidCommunityComment(incoming(), postId)
+          && incoming().authorId == request.auth.uid
+          && incoming().createdAt == request.time
+          && exists(/databases/$(database)/documents/community_posts/$(postId))
+          && get(/databases/$(database)/documents/community_posts/$(postId)).data.status == 'published';
+        allow delete: if isValidId(postId) && isValidId(commentId) && (isAdmin() || (isVerified() && existing().authorId == request.auth.uid));
+      }
+    }
+
+    match /opportunities/{opportunityId} {
+      allow get: if isValidId(opportunityId) && (existing().status == 'verified' || isCoordinatorOrAdmin());
+      allow list: if resource.data.status == 'verified' || isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(opportunityId)
+        && isValidOpportunity(incoming())
+        && incoming().verifiedByUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && isCoordinatorOrAdmin();
+      allow update: if isVerified()
+        && isValidId(opportunityId)
+        && isValidOpportunity(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && isCoordinatorOrAdmin()
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'category', 'organization', 'description', 'eligibility', 'region', 'deadline', 'verificationSource', 'status', 'updatedAt']);
+      allow delete: if isValidId(opportunityId) && isAdmin();
+    }
+
+    match /saved_opportunities/{savedId} {
+      allow get: if isValidId(savedId) && isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isBootstrapAdmin());
+      allow create: if isVerified()
+        && isValidId(savedId)
+        && isValidSavedOpportunity(incoming())
+        && incoming().userId == request.auth.uid
+        && incoming().createdAt == request.time
+        && exists(/databases/$(database)/documents/opportunities/$(incoming().opportunityId));
+      allow delete: if isValidId(savedId) && isVerified() && (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    match /notifications/{notificationId} {
+      allow get: if isValidId(notificationId) && isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isBootstrapAdmin());
+      allow create: if isVerified()
+        && isValidId(notificationId)
+        && isValidNotification(incoming())
+        && incoming().createdAt == request.time
+        && (isCoordinatorOrAdmin() || incoming().userId == request.auth.uid);
+      allow update: if isVerified()
+        && isValidId(notificationId)
+        && isValidNotification(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt
+        && existing().userId == request.auth.uid
+        && incoming().diff(existing()).affectedKeys().hasOnly(['read']);
+      allow delete: if isValidId(notificationId) && isVerified() && (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    match /platform_settings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if resource.data.allowPublicRegistration == true || isBootstrapAdmin();
+      allow create: if isVerified()
+        && isValidId(settingId)
+        && isValidPlatformSetting(incoming())
+        && incoming().updatedAt == request.time
+        && isAdmin();
+      allow update: if isVerified()
+        && isValidId(settingId)
+        && isValidPlatformSetting(incoming())
+        && incoming().updatedAt == request.time
+        && isAdmin()
+        && incoming().diff(existing()).affectedKeys().hasOnly(['launchRegion', 'announcement', 'allowPublicRegistration', 'updatedAt']);
+      allow delete: if isValidId(settingId) && isAdmin();
+    }
+
+    match /test/connection {
+      allow get: if true;
+    }
+  }
+}

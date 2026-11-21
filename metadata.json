@@ -1,0 +1,6 @@
+{
+  "name": "TALENT TO IMPACT",
+  "description": "Digital educational ecosystem for discovering student potential, building projects, sharing knowledge, and unlocking verified opportunities across Uzbekistan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

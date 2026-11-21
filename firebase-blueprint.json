@@ -1,0 +1,235 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated platform user profile with strict PII isolation and role-based access control.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "role": { "type": "string", "enum": ["student", "mentor", "coordinator", "admin"] },
+        "region": { "type": "string", "maxLength": 100 },
+        "district": { "type": "string", "maxLength": 100 },
+        "school": { "type": "string", "maxLength": 160 },
+        "grade": { "type": "string", "maxLength": 30 },
+        "bio": { "type": "string", "maxLength": 600 },
+        "interests": { "type": "array", "description": "Up to 10 interest tags" },
+        "language": { "type": "string", "enum": ["uz", "ru", "en"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "region", "school", "grade", "language", "createdAt", "updatedAt"]
+    },
+    "AdminRegistry": {
+      "title": "AdminRegistry",
+      "description": "Trusted registry of platform administrators and coordinators.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "accessLevel": { "type": "string", "enum": ["admin", "coordinator"] },
+        "assignedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "accessLevel", "assignedAt"]
+    },
+    "TalentQuestion": {
+      "title": "TalentQuestion",
+      "description": "Diagnostic question for TALENT MAP assessment.",
+      "type": "object",
+      "properties": {
+        "order": { "type": "integer" },
+        "domain": { "type": "string", "enum": ["ai_engineering", "research_science", "entrepreneurship", "leadership", "design_architecture", "social_impact"] },
+        "textUz": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "textRu": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "textEn": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["order", "domain", "textUz", "textRu", "textEn", "active", "createdAt", "updatedAt"]
+    },
+    "TalentResult": {
+      "title": "TalentResult",
+      "description": "Real computed TALENT MAP diagnostic result derived strictly from user test responses.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "answersCount": { "type": "integer" },
+        "scores": { "type": "object" },
+        "primaryDomain": { "type": "string", "maxLength": 60 },
+        "secondaryDomain": { "type": "string", "maxLength": 60 },
+        "aiSummary": { "type": "string", "maxLength": 3000 },
+        "aiRoadmap": { "type": "array", "description": "Up to 8 personalized learning steps" },
+        "aiProjectIdeas": { "type": "array", "description": "Up to 5 project direction ideas" },
+        "language": { "type": "string", "enum": ["uz", "ru", "en"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "answersCount", "scores", "primaryDomain", "secondaryDomain", "language", "createdAt"]
+    },
+    "StudentProject": {
+      "title": "StudentProject",
+      "description": "SCHOOL HACK 72 student project workspace with problem, solution, team, tasks, and moderation status.",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "title": { "type": "string", "minLength": 3, "maxLength": 140 },
+        "track": { "type": "string", "enum": ["ai_engineering", "research_science", "entrepreneurship", "leadership", "ecology_smart_city", "education_tech"] },
+        "summary": { "type": "string", "minLength": 10, "maxLength": 500 },
+        "problem": { "type": "string", "minLength": 10, "maxLength": 1500 },
+        "solution": { "type": "string", "minLength": 10, "maxLength": 1500 },
+        "region": { "type": "string", "maxLength": 100 },
+        "school": { "type": "string", "maxLength": 160 },
+        "teamMembers": { "type": "array", "description": "Up to 8 team member entries" },
+        "tasks": { "type": "array", "description": "Up to 25 structured project tasks" },
+        "progress": { "type": "integer" },
+        "status": { "type": "string", "enum": ["draft", "in_progress", "submitted", "approved", "revision_needed"] },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "moderatorNote": { "type": "string", "maxLength": 600 },
+        "aiReview": { "type": "string", "maxLength": 3500 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "ownerName", "title", "track", "summary", "problem", "solution", "region", "school", "teamMembers", "tasks", "progress", "status", "visibility", "createdAt", "updatedAt"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "KNOWLEDGE BRIDGE community educational material, debate topic, or inter-school event.",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "authorRegion": { "type": "string", "maxLength": 100 },
+        "community": { "type": "string", "enum": ["ai_engineering", "research_science", "entrepreneurship", "leadership", "navoi_schools"] },
+        "postType": { "type": "string", "enum": ["material", "debate", "event"] },
+        "title": { "type": "string", "minLength": 4, "maxLength": 180 },
+        "content": { "type": "string", "minLength": 15, "maxLength": 3000 },
+        "eventDate": { "type": "string", "maxLength": 60 },
+        "status": { "type": "string", "enum": ["published", "archived"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "authorRegion", "community", "postType", "title", "content", "status", "createdAt", "updatedAt"]
+    },
+    "CommunityComment": {
+      "title": "CommunityComment",
+      "description": "Discussion reply inside a KNOWLEDGE BRIDGE post.",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "body": { "type": "string", "minLength": 2, "maxLength": 1200 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "authorId", "authorName", "body", "createdAt"]
+    },
+    "VerifiedOpportunity": {
+      "title": "VerifiedOpportunity",
+      "description": "OPPORTUNITY RELAY verified olympiad, program, internship, or mentorship listing published only with confirmed data.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 4, "maxLength": 180 },
+        "category": { "type": "string", "enum": ["program", "olympiad", "internship", "mentorship", "entrepreneurship"] },
+        "organization": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "description": { "type": "string", "minLength": 15, "maxLength": 2500 },
+        "eligibility": { "type": "string", "minLength": 3, "maxLength": 300 },
+        "region": { "type": "string", "maxLength": 100 },
+        "deadline": { "type": "string", "maxLength": 60 },
+        "verificationSource": { "type": "string", "minLength": 5, "maxLength": 400 },
+        "verifiedByUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "verifiedByName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "status": { "type": "string", "enum": ["verified", "archived"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "organization", "description", "eligibility", "region", "deadline", "verificationSource", "verifiedByUid", "verifiedByName", "status", "createdAt", "updatedAt"]
+    },
+    "SavedOpportunity": {
+      "title": "SavedOpportunity",
+      "description": "User-bookmarked opportunity stored in their personal dashboard.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "opportunityId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "opportunityTitle": { "type": "string", "minLength": 2, "maxLength": 180 },
+        "category": { "type": "string", "enum": ["program", "olympiad", "internship", "mentorship", "entrepreneurship"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "opportunityId", "opportunityTitle", "category", "createdAt"]
+    },
+    "UserNotification": {
+      "title": "UserNotification",
+      "description": "Real system or moderation notification delivered to a specific user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "message": { "type": "string", "minLength": 4, "maxLength": 600 },
+        "kind": { "type": "string", "enum": ["system", "project", "opportunity", "role"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "message", "kind", "read", "createdAt"]
+    },
+    "PlatformSetting": {
+      "title": "PlatformSetting",
+      "description": "Global platform configuration and module rollout registry managed by admins.",
+      "type": "object",
+      "properties": {
+        "launchRegion": { "type": "string", "maxLength": 120 },
+        "announcement": { "type": "string", "maxLength": 500 },
+        "allowPublicRegistration": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["launchRegion", "allowPublicRegistration", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profiles with PII isolation."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminRegistry" },
+      "description": "Trusted registry of admin and coordinator roles."
+    },
+    "/talent_questions/{questionId}": {
+      "schema": { "$ref": "#/entities/TalentQuestion" },
+      "description": "Diagnostic questions for TALENT MAP managed by admins."
+    },
+    "/talent_results/{resultId}": {
+      "schema": { "$ref": "#/entities/TalentResult" },
+      "description": "Individual student TALENT MAP results derived from real test submissions."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/StudentProject" },
+      "description": "SCHOOL HACK 72 student projects."
+    },
+    "/community_posts/{postId}": {
+      "schema": { "$ref": "#/entities/CommunityPost" },
+      "description": "KNOWLEDGE BRIDGE materials, debates, and school events."
+    },
+    "/community_posts/{postId}/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/CommunityComment" },
+      "description": "Discussion replies scoped to a parent community post."
+    },
+    "/opportunities/{opportunityId}": {
+      "schema": { "$ref": "#/entities/VerifiedOpportunity" },
+      "description": "OPPORTUNITY RELAY verified listings."
+    },
+    "/saved_opportunities/{savedId}": {
+      "schema": { "$ref": "#/entities/SavedOpportunity" },
+      "description": "User bookmarks for verified opportunities."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/UserNotification" },
+      "description": "Per-user activity and moderation notifications."
+    },
+    "/platform_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/PlatformSetting" },
+      "description": "Global platform configuration managed by administrators."
+    }
+  }
+}
