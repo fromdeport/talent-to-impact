@@ -10,8 +10,8 @@ export function Footer() {
     <footer
       className={`border-t transition-colors ${
         isLight
-          ? 'border-[#1570D4]/20 bg-[#D4EBFF] text-[#28426E]'
-          : 'border-[#8EA4E8]/18 bg-[#060A1B] text-[#9CB0DB]'
+          ? 'border-[#1570D4]/18 bg-[#E4EEF8] text-[#28426E]'
+          : 'border-[#8EA4E8]/18 bg-[#050917] text-[#9CB0DB]'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-9 sm:py-12 space-y-6 sm:space-y-8">
@@ -30,7 +30,7 @@ export function Footer() {
             isLight ? 'border-[#1570D4]/15' : 'border-[#8EA4E8]/15'
           }`}
         >
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5 sm:gap-5 font-pixel text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5 sm:gap-5 font-official text-sm font-medium">
             <button
               type="button"
               onClick={() => setActiveView('talent-map')}

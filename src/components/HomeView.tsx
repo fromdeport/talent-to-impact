@@ -12,7 +12,7 @@ import {
   PixelShieldCheck,
   PixelUsers,
 } from './PixelIcons';
-import { PixelSkyBackdrop } from './PixelSkyBackdrop';
+import { InteractiveBackdrop } from './InteractiveBackdrop';
 
 export function HomeView() {
   const { setActiveView, user, signInWithGoogle, theme, t } = usePlatform();
@@ -70,27 +70,27 @@ export function HomeView() {
   return (
     <div
       className={`min-h-screen transition-colors ${
-        isLight ? 'bg-[#EAF6FF] text-[#0B1A36]' : 'bg-[#090E23] text-[#F4F7FF]'
+        isLight ? 'bg-[#F4F8FD] text-[#0B1A36]' : 'bg-[#070C1D] text-[#F4F7FF]'
       }`}
     >
-      {/* HERO SECTION — Native 60fps Pixel Sky Backdrop (Zero Watermark) */}
+      {/* HERO SECTION — Interactive Architectural Constellation & Orbital Canvas */}
       <section
         className={`relative overflow-hidden border-b ${
-          isLight ? 'border-[#1570D4]/20' : 'border-[#8EA4E8]/18'
+          isLight ? 'border-[#1570D4]/18' : 'border-[#8EA4E8]/18'
         }`}
       >
-        <PixelSkyBackdrop variant="hero" />
+        <InteractiveBackdrop variant="hero" />
 
-        {/* Theme-tuned atmospheric scrim: preserves full text readability while letting the Pixel Sky shine */}
+        {/* Theme-tuned architectural scrim: preserves full text legibility while letting interactive geometry shine */}
         {isLight ? (
           <>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#EAF6FF]/82 via-[#EAF6FF]/42 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#EAF6FF]/90 via-transparent to-[#4FA3E8]/15" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#F4F8FD]/86 via-[#F4F8FD]/42 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#F4F8FD]/92 via-transparent to-transparent" />
           </>
         ) : (
           <>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#090E23]/76 via-[#090E23]/34 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#090E23]/92 via-transparent to-[#090E23]/20" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#070C1D]/78 via-[#070C1D]/32 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070C1D]/92 via-transparent to-[#070C1D]/18" />
           </>
         )}
 
@@ -104,10 +104,10 @@ export function HomeView() {
 
           <div className="mt-4 sm:mt-8 lg:mt-12 max-w-2xl space-y-5 sm:space-y-7">
             <p
-              className={`pointer-events-auto inline-block text-xs sm:text-base font-pixel font-semibold tracking-wide ${
+              className={`pointer-events-auto inline-block text-xs sm:text-sm font-official font-bold uppercase tracking-[0.12em] ${
                 isLight
                   ? 'text-[#1570D4]'
-                  : 'text-[#8FD3FF] drop-shadow-[0_2px_10px_rgba(9,14,35,0.85)]'
+                  : 'text-[#8FD3FF] drop-shadow-[0_2px_10px_rgba(7,12,29,0.85)]'
               }`}
             >
               {t.hero.eyebrow}
@@ -117,7 +117,7 @@ export function HomeView() {
               className={`pointer-events-auto font-display font-bold text-[1.7rem] sm:text-5xl lg:text-[3.35rem] leading-[1.08] sm:leading-[1.06] tracking-[-0.03em] ${
                 isLight
                   ? 'text-[#0B1A36]'
-                  : 'text-[#F4F7FF] drop-shadow-[0_4px_24px_rgba(9,14,35,0.8)]'
+                  : 'text-[#F4F7FF] drop-shadow-[0_4px_24px_rgba(7,12,29,0.8)]'
               }`}
             >
               TALENT TO IMPACT
@@ -131,10 +131,10 @@ export function HomeView() {
             </h1>
 
             <p
-              className={`pointer-events-auto font-pixel text-xl sm:text-3xl font-medium leading-snug ${
+              className={`pointer-events-auto font-official text-lg sm:text-2xl font-semibold leading-snug tracking-[-0.015em] ${
                 isLight
                   ? 'text-[#14305C]'
-                  : 'text-[#FFF3B8] drop-shadow-[0_2px_14px_rgba(9,14,35,0.85)]'
+                  : 'text-[#DCE8FF] drop-shadow-[0_2px_14px_rgba(7,12,29,0.85)]'
               }`}
             >
               {t.hero.subheadline}
@@ -144,7 +144,7 @@ export function HomeView() {
               className={`pointer-events-auto text-sm sm:text-base leading-relaxed max-w-xl ${
                 isLight
                   ? 'text-[#1F3A66] font-medium'
-                  : 'text-[#D6E1FA] drop-shadow-[0_2px_12px_rgba(9,14,35,0.85)]'
+                  : 'text-[#C9D8F6] drop-shadow-[0_2px_12px_rgba(7,12,29,0.85)]'
               }`}
             >
               {t.hero.mission}
@@ -155,7 +155,7 @@ export function HomeView() {
               <button
                 type="button"
                 onClick={() => setActiveView('talent-map')}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#090E23] text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#070C1D] text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0 shadow-sm"
               >
                 {t.hero.ctaDiscover}
                 <PixelArrowUpRight className="w-4 h-4" />
@@ -164,7 +164,7 @@ export function HomeView() {
               <button
                 type="button"
                 onClick={() => setActiveView('school-hack')}
-                className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 ${
+                className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0 ${
                   isLight
                     ? 'bg-white/90 hover:bg-white border-[#1570D4]/30 text-[#0B1A36]'
                     : 'bg-[#101733]/85 hover:bg-[#172145] border-[#8EA4E8]/30 text-[#F4F7FF]'
@@ -176,10 +176,10 @@ export function HomeView() {
               <button
                 type="button"
                 onClick={scrollToModules}
-                className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 rounded-md text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 ${
+                className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 rounded-md text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0 ${
                   isLight
                     ? 'text-[#0B1A36] hover:text-[#1570D4]'
-                    : 'text-[#C5D3F0] hover:text-[#D4FF00] drop-shadow-[0_2px_8px_rgba(9,14,35,0.85)]'
+                    : 'text-[#C5D3F0] hover:text-[#D4FF00] drop-shadow-[0_2px_8px_rgba(7,12,29,0.85)]'
                 }`}
               >
                 {t.hero.ctaExplore}
@@ -200,7 +200,7 @@ export function HomeView() {
             {t.home.modulesTitle}
           </h2>
           <p
-            className={`font-pixel text-lg sm:text-2xl leading-snug ${
+            className={`font-official text-base sm:text-xl font-medium leading-relaxed ${
               isLight ? 'text-[#28426E]' : 'text-[#B9C9EE]'
             }`}
           >
@@ -245,7 +245,7 @@ export function HomeView() {
                   }`}
                 >
                   <div className="space-y-3 sm:space-y-4">
-                    <p className={`font-pixel text-xs sm:text-base font-semibold tracking-wider ${mod.accent}`}>
+                    <p className={`font-official text-xs sm:text-sm font-bold uppercase tracking-[0.1em] ${mod.accent}`}>
                       {mod.code}
                     </p>
                     <h3
@@ -256,8 +256,8 @@ export function HomeView() {
                       {mod.title}
                     </h3>
                     <p
-                      className={`font-pixel text-lg sm:text-2xl leading-snug ${
-                        isLight ? 'text-[#1570D4]' : 'text-[#FFF3B8]'
+                      className={`font-official text-base sm:text-xl font-semibold leading-snug ${
+                        isLight ? 'text-[#1570D4]' : 'text-[#DCE8FF]'
                       }`}
                     >
                       {mod.tagline}
@@ -275,7 +275,7 @@ export function HomeView() {
                     <button
                       type="button"
                       onClick={() => setActiveView(mod.id)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#090E23] text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#070C1D] text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0"
                     >
                       {t.home.openModule}
                       <PixelArrowUpRight className="w-4 h-4" />
@@ -292,8 +292,8 @@ export function HomeView() {
       <section
         className={`border-t py-14 sm:py-20 transition-colors ${
           isLight
-            ? 'border-[#1570D4]/20 bg-[#DCEFFF]'
-            : 'border-[#8EA4E8]/18 bg-[#0D142E]'
+            ? 'border-[#1570D4]/18 bg-[#E8F1FA]'
+            : 'border-[#8EA4E8]/18 bg-[#0B1228]'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -307,7 +307,7 @@ export function HomeView() {
                 {t.home.scalabilityTitle}
               </h2>
               <p
-                className={`font-pixel text-lg sm:text-xl leading-snug ${
+                className={`font-official text-base sm:text-lg font-medium leading-relaxed ${
                   isLight ? 'text-[#28426E]' : 'text-[#C5D3F0]'
                 }`}
               >
@@ -354,7 +354,7 @@ export function HomeView() {
                       <PixelActiveBadge delayMs={idx * 420} />
                     ) : (
                       <span
-                        className={`font-pixel text-xs font-semibold tracking-wider shrink-0 ${
+                        className={`font-official text-[11px] font-bold uppercase tracking-[0.1em] shrink-0 ${
                           isLight ? 'text-[#7C95BC]' : 'text-[#5D709E]'
                         }`}
                       >
@@ -396,7 +396,7 @@ export function HomeView() {
                 }`}
               >
                 <h4
-                  className={`font-pixel text-sm font-semibold uppercase tracking-wider ${
+                  className={`font-official text-xs sm:text-sm font-bold uppercase tracking-[0.1em] ${
                     isLight ? 'text-[#1570D4]' : 'text-[#D4FF00]'
                   }`}
                 >
@@ -419,18 +419,18 @@ export function HomeView() {
         </div>
       </section>
 
-      {/* FINAL VISION SECTION — Native 60fps Pixel Sky Backdrop */}
+      {/* FINAL VISION SECTION — Interactive Architectural Constellation Backdrop */}
       <section
         className={`relative overflow-hidden border-t py-16 sm:py-24 ${
-          isLight ? 'border-[#1570D4]/20' : 'border-[#8EA4E8]/18'
+          isLight ? 'border-[#1570D4]/18' : 'border-[#8EA4E8]/18'
         }`}
       >
-        <PixelSkyBackdrop variant="ambient" />
+        <InteractiveBackdrop variant="ambient" />
         <div
           className={`pointer-events-none absolute inset-0 ${
             isLight
-              ? 'bg-gradient-to-t from-[#EAF6FF]/88 via-[#EAF6FF]/52 to-[#EAF6FF]/72'
-              : 'bg-gradient-to-t from-[#090E23]/88 via-[#090E23]/48 to-[#090E23]/76'
+              ? 'bg-gradient-to-t from-[#F4F8FD]/88 via-[#F4F8FD]/46 to-[#F4F8FD]/72'
+              : 'bg-gradient-to-t from-[#070C1D]/88 via-[#070C1D]/46 to-[#070C1D]/76'
           }`}
         />
 
@@ -439,16 +439,16 @@ export function HomeView() {
             className={`pointer-events-auto font-display text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight ${
               isLight
                 ? 'text-[#0B1A36]'
-                : 'text-[#F4F7FF] drop-shadow-[0_4px_24px_rgba(9,14,35,0.8)]'
+                : 'text-[#F4F7FF] drop-shadow-[0_4px_24px_rgba(7,12,29,0.8)]'
             }`}
           >
             {t.home.visionTitle}
           </h2>
           <p
-            className={`pointer-events-auto font-pixel text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto ${
+            className={`pointer-events-auto font-official text-base sm:text-xl font-medium leading-relaxed max-w-2xl mx-auto ${
               isLight
                 ? 'text-[#14305C]'
-                : 'text-[#FFF3B8] drop-shadow-[0_2px_12px_rgba(9,14,35,0.8)]'
+                : 'text-[#DCE8FF] drop-shadow-[0_2px_12px_rgba(7,12,29,0.8)]'
             }`}
           >
             {t.home.visionSubtitle}
@@ -457,7 +457,7 @@ export function HomeView() {
             <button
               type="button"
               onClick={() => setActiveView('talent-map')}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#090E23] text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#D4FF00] hover:bg-[#C2EC00] text-[#070C1D] text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0"
             >
               {t.hero.ctaDiscover}
               <PixelArrowUpRight className="w-4 h-4" />
@@ -466,7 +466,7 @@ export function HomeView() {
               <button
                 type="button"
                 onClick={signInWithGoogle}
-                className={`w-full sm:w-auto px-6 py-3 rounded-md border text-sm font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 ${
+                className={`w-full sm:w-auto px-6 py-3 rounded-md border text-xs sm:text-[13px] font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0 ${
                   isLight
                     ? 'border-[#1570D4]/30 bg-white/90 hover:bg-white text-[#0B1A36]'
                     : 'border-[#8EA4E8]/30 bg-[#101733]/85 hover:bg-[#172145] text-[#F4F7FF]'

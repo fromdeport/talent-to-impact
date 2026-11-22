@@ -1,11 +1,12 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
-  --font-pixel: "Pixelify Sans", "Onest", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Onest", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Momo Trust Sans", "Onest", ui-sans-serif, system-ui, sans-serif;
-  --color-obsidian: #090E23;
+  --font-official: "Manrope", "Onest", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Onest", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Momo Trust Sans", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --color-obsidian: #070C1D;
   --color-graphite: #101733;
   --color-volt: #D4FF00;
   --color-optical-cyan: #8FD3FF;
@@ -13,18 +14,18 @@
 }
 
 /* ==========================================================================
-   DUAL PIXEL-SKY THEME TOKENS
-   Dark  -> Starry Midnight Night Sky (Unicorn Studio lLsvCDiAv9LBiSWdtQVd)
-   Light -> Daytime Azure Cloud Sky   (Unicorn Studio NNJtGH4REW39gQaOwfAd)
+   DUAL EXECUTIVE THEME TOKENS
+   Dark  -> Obsidian Midnight Executive Architecture
+   Light -> Architectural Daylight Porcelain & Cobalt
    ========================================================================== */
 :root,
 [data-theme="dark"] {
-  --bg-base: #090E23;
-  --bg-surface: #101733;
-  --bg-elevated: #172145;
-  --bg-subtle: #0D142E;
-  --bg-nav: rgba(9, 14, 35, 0.80);
-  --bg-footer: #060A1B;
+  --bg-base: #070C1D;
+  --bg-surface: #0E152E;
+  --bg-elevated: #152042;
+  --bg-subtle: #0B1228;
+  --bg-nav: rgba(7, 12, 29, 0.84);
+  --bg-footer: #050917;
   --text-primary: #F4F7FF;
   --text-secondary: #C5D3F0;
   --text-muted: #889BC7;
@@ -32,30 +33,30 @@
   --border-strong: rgba(148, 174, 240, 0.34);
   --accent-primary: #D4FF00;
   --accent-primary-hover: #C2EC00;
-  --accent-primary-ink: #090E23;
+  --accent-primary-ink: #070C1D;
   --accent-secondary: #8FD3FF;
-  --accent-moon: #FFF3B8;
-  --grid-line: rgba(148, 174, 240, 0.065);
+  --accent-highlight: #E8F1FF;
+  --grid-line: rgba(148, 174, 240, 0.06);
 }
 
 [data-theme="light"] {
-  --bg-base: #EAF6FF;
+  --bg-base: #F4F8FD;
   --bg-surface: #FFFFFF;
-  --bg-elevated: #F3FAFF;
-  --bg-subtle: #DCEFFF;
-  --bg-nav: rgba(234, 246, 255, 0.86);
-  --bg-footer: #D4EBFF;
+  --bg-elevated: #F8FBFF;
+  --bg-subtle: #E8F1FA;
+  --bg-nav: rgba(244, 248, 253, 0.88);
+  --bg-footer: #E4EEF8;
   --text-primary: #0B1A36;
   --text-secondary: #28426E;
   --text-muted: #506C99;
-  --border-subtle: rgba(34, 108, 196, 0.18);
-  --border-strong: rgba(34, 108, 196, 0.36);
+  --border-subtle: rgba(21, 112, 212, 0.16);
+  --border-strong: rgba(21, 112, 212, 0.34);
   --accent-primary: #C9F500;
   --accent-primary-hover: #B8E300;
   --accent-primary-ink: #0B1A36;
   --accent-secondary: #1570D4;
-  --accent-moon: #1570D4;
-  --grid-line: rgba(34, 108, 196, 0.075);
+  --accent-highlight: #1570D4;
+  --grid-line: rgba(21, 112, 212, 0.065);
 }
 
 @layer base {
@@ -83,12 +84,13 @@
   }
 }
 
-/* Replaced cursive Cormorant Garamond everywhere with Pixelify Sans */
+/* Official institutional accent typography (Manrope) */
 .font-editorial,
+.font-official,
 .font-pixel {
-  font-family: var(--font-pixel);
+  font-family: var(--font-official);
   font-style: normal;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 .sci-grid-bg {
@@ -116,14 +118,14 @@
 
 /* ==========================================================================
    THEME HARMONIZATION ACROSS ALL MODULE VIEWS
-   Aligns Dark surfaces to Starry Midnight (#090E23 / #101733)
-   and flips Light surfaces cleanly to Daytime Cloud Sky (#EAF6FF / #FFFFFF)
+   Aligns Dark surfaces to Obsidian Midnight (#070C1D / #101733)
+   and flips Light surfaces cleanly to Architectural Porcelain (#F4F8FD / #FFFFFF)
    ========================================================================== */
 [data-theme="dark"] .bg-\[\#050608\] {
-  background-color: #090E23;
+  background-color: #070C1D;
 }
 [data-theme="dark"] .bg-\[\#080A0F\] {
-  background-color: #0D142E;
+  background-color: #0B1228;
 }
 [data-theme="dark"] .bg-\[\#0C0F16\],
 [data-theme="dark"] .bg-\[\#0C0F16\]\/90,
@@ -143,17 +145,17 @@
 [data-theme="light"] .bg-\[\#050608\],
 [data-theme="light"] .bg-\[\#050608\]\/80,
 [data-theme="light"] .bg-\[\#050608\]\/82 {
-  background-color: #EAF6FF;
+  background-color: #F4F8FD;
 }
 [data-theme="light"] .bg-\[\#080A0F\],
 [data-theme="light"] .bg-\[\#040507\] {
-  background-color: #DCEFFF;
+  background-color: #E8F1FA;
 }
 [data-theme="light"] .bg-\[\#0C0F16\],
 [data-theme="light"] .bg-\[\#0C0F16\]\/90,
 [data-theme="light"] .bg-\[\#0C0F16\]\/85 {
   background-color: #FFFFFF;
-  box-shadow: 0 6px 24px rgba(22, 92, 178, 0.07);
+  box-shadow: 0 6px 24px rgba(15, 58, 128, 0.06);
 }
 [data-theme="light"] .bg-white\/5,
 [data-theme="light"] .bg-white\/10 {
@@ -229,10 +231,9 @@
   color: #0B1A36 !important;
 }
 
-/* Crisp nearest-neighbor scaling for native Pixel Art Sky canvas */
-.pixel-art-canvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+/* Smooth vector rendering for interactive architectural canvas */
+.architectural-canvas {
+  display: block;
 }
 
 /* Periodic green starlight radiance for pixel-art ACTIVE / FAOL / АКТИВНО badge */

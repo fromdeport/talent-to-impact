@@ -29,8 +29,8 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors ${
         isLight
-          ? 'border-[#1570D4]/20 bg-[#EAF6FF]/85'
-          : 'border-[#8EA4E8]/18 bg-[#090E23]/82'
+          ? 'border-[#1570D4]/18 bg-[#F4F8FD]/88'
+          : 'border-[#8EA4E8]/18 bg-[#070C1D]/84'
       }`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-6">
@@ -53,7 +53,7 @@ export function Navbar() {
                 key={item.id}
                 type="button"
                 onClick={() => handleNavigate(item.id)}
-                className={`font-pixel text-[15px] font-medium tracking-wide transition-colors whitespace-nowrap shrink-0 py-1 border-b-2 ${
+                className={`font-official text-sm font-semibold tracking-normal transition-colors whitespace-nowrap shrink-0 py-1 border-b-2 ${
                   active
                     ? isLight
                       ? 'text-[#1570D4] border-[#1570D4]'
@@ -76,30 +76,30 @@ export function Navbar() {
             onClick={toggleTheme}
             aria-label={isLight ? 'Switch to dark theme' : 'Switch to light theme'}
             title={isLight ? 'Dark Mode' : 'Light Mode'}
-            className={`inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-md border text-xs font-pixel font-semibold tracking-wider transition-colors whitespace-nowrap shrink-0 ${
+            className={`inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-md border text-xs font-official font-bold tracking-[0.08em] transition-colors whitespace-nowrap shrink-0 ${
               isLight
                 ? 'bg-white/90 hover:bg-white border-[#1570D4]/25 text-[#0B1A36]'
-                : 'bg-[#101733]/90 hover:bg-[#172145] border-[#8EA4E8]/25 text-[#FFF3B8]'
+                : 'bg-[#101733]/90 hover:bg-[#172145] border-[#8EA4E8]/25 text-[#DCE8FF]'
             }`}
           >
             {isLight ? (
               <PixelMoon className="w-4 h-4 text-[#1570D4]" />
             ) : (
-              <PixelSun className="w-4 h-4 text-[#FFF3B8]" />
+              <PixelSun className="w-4 h-4 text-[#D4FF00]" />
             )}
-            <span className="hidden sm:inline">{isLight ? 'NIGHT' : 'DAY'}</span>
+            <span className="hidden sm:inline">{isLight ? 'DARK' : 'LIGHT'}</span>
           </button>
 
           {user ? (
             <button
               type="button"
               onClick={() => handleNavigate('dashboard')}
-              className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs font-pixel font-semibold uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 max-w-[96px] sm:max-w-none truncate ${
+              className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs font-official font-bold uppercase tracking-[0.07em] transition-colors whitespace-nowrap shrink-0 max-w-[96px] sm:max-w-none truncate ${
                 activeView === 'dashboard'
                   ? isLight
                     ? 'bg-[#1570D4] text-white'
-                    : 'bg-[#8FD3FF] text-[#090E23]'
-                  : 'bg-[#D4FF00] hover:bg-[#C2EC00] text-[#090E23]'
+                    : 'bg-[#8FD3FF] text-[#070C1D]'
+                  : 'bg-[#D4FF00] hover:bg-[#C2EC00] text-[#070C1D]'
               }`}
             >
               {profile?.displayName ? profile.displayName.split(' ')[0] : t.nav.dashboard}
@@ -108,7 +108,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={signInWithGoogle}
-              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs font-pixel font-semibold uppercase tracking-wider bg-[#D4FF00] hover:bg-[#C2EC00] text-[#090E23] transition-colors whitespace-nowrap shrink-0"
+              className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs font-official font-bold uppercase tracking-[0.07em] bg-[#D4FF00] hover:bg-[#C2EC00] text-[#070C1D] transition-colors whitespace-nowrap shrink-0"
             >
               {t.nav.signIn}
             </button>
@@ -135,8 +135,8 @@ export function Navbar() {
         <div
           className={`lg:hidden border-t px-4 sm:px-6 py-4 space-y-3 shadow-lg ${
             isLight
-              ? 'border-[#1570D4]/20 bg-[#EAF6FF]/98'
-              : 'border-[#8EA4E8]/18 bg-[#090E23]/98'
+              ? 'border-[#1570D4]/18 bg-[#F4F8FD]/98'
+              : 'border-[#8EA4E8]/18 bg-[#070C1D]/98'
           }`}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -145,7 +145,7 @@ export function Navbar() {
                 key={item.id}
                 type="button"
                 onClick={() => handleNavigate(item.id)}
-                className={`block w-full text-left px-3.5 py-2.5 rounded-md font-pixel text-base font-medium transition-colors ${
+                className={`block w-full text-left px-3.5 py-2.5 rounded-md font-official text-sm font-semibold transition-colors ${
                   activeView === item.id
                     ? isLight
                       ? 'bg-[#1570D4]/14 text-[#1570D4] border border-[#1570D4]/25'
@@ -162,7 +162,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => handleNavigate('dashboard')}
-                className={`block w-full text-left px-3.5 py-2.5 rounded-md font-pixel text-base font-medium transition-colors ${
+                className={`block w-full text-left px-3.5 py-2.5 rounded-md font-official text-sm font-semibold transition-colors ${
                   activeView === 'dashboard'
                     ? isLight
                       ? 'bg-[#1570D4]/14 text-[#1570D4] border border-[#1570D4]/25'
@@ -183,11 +183,11 @@ export function Navbar() {
             }`}
           >
             <span
-              className={`font-pixel text-xs uppercase tracking-wider ${
+              className={`font-official text-xs font-bold uppercase tracking-[0.1em] ${
                 isLight ? 'text-[#506C99]' : 'text-[#889BC7]'
               }`}
             >
-              {isLight ? 'DAY MODE' : 'NIGHT MODE'}
+              {isLight ? 'LIGHT MODE' : 'DARK MODE'}
             </span>
             <LanguageSwitch />
           </div>

@@ -13,11 +13,11 @@ interface ModuleBannerProps {
 }
 
 /**
- * Restored full-bleed architectural Module Banner adapted cleanly for BOTH themes:
- * - Dark mode  -> Deep midnight starry indigo gradient with softly blended atmospheric 3D visual
- *                 and bright crisp typography (#F4F7FF / #FFF3B8).
- * - Light mode -> Airy daytime pixel-sky gradient (#D7EEFF -> #F4FAFF -> #FFFFFF) where the
- *                 white-background 3D illustration blends seamlessly via mix-blend-multiply
+ * Full-bleed architectural Module Banner adapted cleanly for BOTH themes:
+ * - Dark mode  -> Deep obsidian-midnight gradient with softly blended atmospheric 3D visual
+ *                 and crisp executive typography (#F4F7FF / #C9DAFA).
+ * - Light mode -> Clean porcelain-ice architectural gradient (#E4EFFB -> #F2F7FD -> #FFFFFF)
+ *                 where the white-background 3D illustration blends seamlessly via mix-blend-multiply
  *                 with crisp deep-navy typography (#0B1A36 / #1570D4).
  */
 export function ModuleBanner({
@@ -45,17 +45,17 @@ export function ModuleBanner({
     <section
       className={`relative border-b overflow-hidden transition-colors ${
         isLight
-          ? 'border-[#1570D4]/20 bg-gradient-to-r from-[#D7EEFF] via-[#ECF7FF] to-[#FFFFFF]'
-          : 'border-[#8EA4E8]/18 bg-[#090E23]'
+          ? 'border-[#1570D4]/18 bg-gradient-to-r from-[#E4EFFB] via-[#F2F7FD] to-[#FFFFFF]'
+          : 'border-[#8EA4E8]/18 bg-[#070C1D]'
       }`}
     >
       {/* Full-bleed atmospheric backdrop adapted per theme */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         {isLight ? (
           <>
-            {/* Subtle pixel-sky coordinate grid */}
+            {/* Subtle architectural coordinate grid */}
             <div className="absolute inset-0 sci-grid-bg opacity-65" />
-            {/* White-studio 3D illustration blended seamlessly into the bright sky with mix-blend-multiply */}
+            {/* White-studio 3D illustration blended seamlessly into the light architectural surface */}
             <div className="absolute inset-y-0 right-0 w-full md:w-[58%] lg:w-[48%] flex items-center justify-end pr-4 sm:pr-10">
               <img
                 src={image}
@@ -64,12 +64,12 @@ export function ModuleBanner({
                 className="h-[88%] max-w-full object-contain opacity-15 sm:opacity-35 md:opacity-55 mix-blend-multiply"
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#D7EEFF] via-[#ECF7FF]/88 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#E4EFFB] via-[#F2F7FD]/88 to-transparent" />
           </>
         ) : (
           <>
             <div className="absolute inset-0 sci-grid-bg opacity-80" />
-            {/* Soft-edge full-bleed atmospheric visual on the right of the midnight banner */}
+            {/* Soft-edge full-bleed atmospheric visual on the right of the dark banner */}
             <div
               className="absolute inset-y-0 right-0 w-full md:w-[58%] lg:w-[50%] flex items-center justify-end pr-4 sm:pr-10"
               style={{
@@ -84,7 +84,7 @@ export function ModuleBanner({
                 className="h-[92%] max-w-full object-contain opacity-12 sm:opacity-20 md:opacity-24 contrast-110 brightness-90 rounded-md"
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#090E23] via-[#090E23]/84 to-[#090E23]/35" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#070C1D] via-[#070C1D]/84 to-[#070C1D]/35" />
           </>
         )}
       </div>
@@ -92,7 +92,7 @@ export function ModuleBanner({
       {/* Exact original wide full-bleed content layout */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 space-y-3.5 sm:space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-          <p className={`font-pixel text-xs sm:text-base font-semibold tracking-wider ${codeClass}`}>
+          <p className={`font-official text-xs sm:text-sm font-bold uppercase tracking-[0.1em] ${codeClass}`}>
             {code}
           </p>
           <LanguageSwitch />
@@ -108,8 +108,8 @@ export function ModuleBanner({
               {title}
             </h1>
             <p
-              className={`font-pixel text-lg sm:text-2xl leading-snug ${
-                isLight ? 'text-[#28426E]' : 'text-[#FFF3B8]'
+              className={`font-official text-base sm:text-xl font-medium leading-snug ${
+                isLight ? 'text-[#28426E]' : 'text-[#C9DAFA]'
               }`}
             >
               {subtitle}

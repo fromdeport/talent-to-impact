@@ -28,11 +28,11 @@ export function LanguageSwitch() {
             key={item.code}
             type="button"
             onClick={() => setLanguage(item.code)}
-            className={`px-2.5 py-1 text-xs font-pixel font-semibold rounded-sm transition-colors whitespace-nowrap shrink-0 ${
+            className={`px-2.5 py-1 text-xs font-official font-bold tracking-[0.06em] rounded-sm transition-colors whitespace-nowrap shrink-0 ${
               active
                 ? isLight
                   ? 'bg-[#1570D4] text-white'
-                  : 'bg-[#D4FF00] text-[#090E23]'
+                  : 'bg-[#D4FF00] text-[#070C1D]'
                 : isLight
                   ? 'text-[#28426E] hover:text-[#0B1A36]'
                   : 'text-[#9CB0DB] hover:text-white'

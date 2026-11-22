@@ -49,7 +49,7 @@ export function BrandLogo({ compact = false }: BrandLogoProps) {
         >
           TALENT{' '}
           <span
-            className={`font-pixel font-semibold text-sm sm:text-lg px-0.5 ${
+            className={`font-official font-extrabold text-sm sm:text-base px-0.5 ${
               isLight ? 'text-[#1570D4]' : 'text-[#D4FF00]'
             }`}
           >
